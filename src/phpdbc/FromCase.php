@@ -8,6 +8,8 @@
 
 namespace phpdbc;
 
+use ReflectionClass;
+use ReflectionProperty;
 
 class FromCase {
 
@@ -28,9 +30,9 @@ class FromCase {
 
 	function list() {
 		$results = [];
-		$refcls = new \ReflectionClass($this->entity);
+		$refcls = new ReflectionClass($this->entity);
 		$columns = [];
-		foreach ($refcls->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
+		foreach ($refcls->getProperties(ReflectionProperty::IS_PUBLIC) as $prop) {
 			array_push($columns, $prop->getName());
 		}
 		$sth = $this->db->prepare(sprintf("SELECT %s FROM %s %s", join(", ", $columns), $this->entity, $this->where));
@@ -48,8 +50,12 @@ class FromCase {
 	function singleResult() {
 		$result = self::list();
 		if (count($result) > 1) {
-			throw new \Exception('結果が一意でありません.');
+			throw new PhpdbcException('結果が一意でありません.');
 		}
 		return $result[0];
+	}
+
+	function delete() {
+		return new Executable($this->db, sprintf("DELETE FROM %s %s", $this->entity, $this->where));
 	}
 }

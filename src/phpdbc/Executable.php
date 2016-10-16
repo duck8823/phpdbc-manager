@@ -20,7 +20,9 @@ class Executable {
 	}
 
 	function execute() {
-		$this->db->exec($this->sql);
+		if (gettype($this->db->exec($this->sql)) != 'integer') {
+			throw new PhpdbcException('SQLの実行に失敗しました: ' . $this->sql);
+		}
 	}
 
 	public function getSql() {

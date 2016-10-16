@@ -9,6 +9,8 @@
 namespace phpdbc;
 
 use PDO;
+use ReflectionClass;
+use ReflectionProperty;
 
 class Manager {
 
@@ -28,13 +30,13 @@ class Manager {
 
 	function create($entity) {
 		$columns = [];
-		$refcls = new \ReflectionClass($entity);
-		$props = $refcls->getProperties(\ReflectionProperty::IS_PUBLIC);
+		$refcls = new ReflectionClass($entity);
+		$props = $refcls->getProperties(ReflectionProperty::IS_PUBLIC);
 
 		foreach ($props as $prop) {
 			$type = $prop->getValue($entity);
 			if (!in_array($type, ["INTEGER", "TEXT", "BOOLEAN"])) {
-				throw new \Exception(sprintf("次の型は対応していません. :%s", $type));
+				throw new PhpdbcException(sprintf("次の型は対応していません. :%s", $type));
 			}
 			array_push($columns, sprintf("%s %s", $prop->getName(), $type));
 		}
@@ -42,14 +44,14 @@ class Manager {
 	}
 
 	function insert($data) {
-		$refcls = new \ReflectionClass($data);
+		$refcls = new ReflectionClass($data);
 		return new Executable($this->db, sprintf("INSERT INTO %s %s", $refcls->getName(), $this->_createSentence($data)));
 	}
 
-	function _createSentence($data) {
+	private static function _createSentence($data) {
 		$columns = [];
 		$values = [];
-		$refcls = new \ReflectionClass($data);
+		$refcls = new ReflectionClass($data);
 		foreach ($refcls->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
 			array_push($columns, $prop->getName());
 			$value =  $prop->getValue($data);

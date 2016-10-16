@@ -17,10 +17,10 @@ class Where {
 
 	function __construct($column = null, $value = null, $operator = null) {
 		if ($column != null && gettype($column) != 'string') {
-			throw new \Exception("カラム名はstring型でなければなりません.");
+			throw new PhpdbcException("カラム名はstring型でなければなりません.");
 		}
 		if (($column != null && $operator == null) || ($column == null && $operator != null) || ($column == null && $operator == null && $value != null)) {
-			throw new \Exception();
+			throw new PhpdbcException();
 		}
 		$this->column = $column;
 		$this->value = $value;
@@ -41,10 +41,4 @@ class Where {
 		}
 		return sprintf("WHERE %s %s %s", $this->column, $this->operator, $value);
 	}
-}
-
-final class Operator {
-	const EQUAL = '=';
-	const NOT_EQUAL = '<>';
-	const LIKE = 'LIKE';
 }
