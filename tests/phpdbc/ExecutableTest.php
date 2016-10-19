@@ -9,7 +9,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-use Phpdbc;
 use phpdbc\PhpdbcException;
 
 class ExecutableTest extends TestCase {
