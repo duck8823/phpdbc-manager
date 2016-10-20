@@ -13,8 +13,8 @@ use phpdbc\Operator;
 class OperatorTest extends TestCase {
 
 	function testOperator() {
-		$this->assertEquals('=', Operator::EQUAL);
-		$this->assertEquals('<>', Operator::NOT_EQUAL);
-		$this->assertEquals('LIKE', Operator::LIKE);
+		$this->assertEquals('=', Operator::EQUAL());
+		$this->assertEquals('<>', Operator::NOT_EQUAL());
+		$this->assertEquals('LIKE', Operator::LIKE());
 	}
 }

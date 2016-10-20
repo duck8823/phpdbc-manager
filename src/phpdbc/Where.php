@@ -9,32 +9,52 @@
 namespace phpdbc;
 
 
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
+
 class Where {
 
 	private $column;
 	private $value;
 	private $operator;
 
-	function __construct($column = null, $value = null, $operator = null) {
-		if ($column != null && gettype($column) != 'string') {
-			throw new PhpdbcException("カラム名はstring型でなければなりません.");
+	function __construct() {
+		$column = null;
+		$value = null;
+		$operator = null;
+		switch (func_num_args()) {
+			case 0:
+				break;
+			case 2:
+				$column = func_get_arg(0);
+				$operator = func_get_arg(1);
+				break;
+			case 3:
+				$column = func_get_arg(0);
+				$value = func_get_arg(1);
+				$operator = func_get_arg(2);
+				break;
+			default:
+				throw new InvalidArgumentException();
 		}
 		if (($column != null && $operator == null) || ($column == null && $operator != null) || ($column == null && $operator == null && $value != null)) {
 			throw new PhpdbcException();
+		}
+		if ($column != null && gettype($column) != 'string' && gettype($operator) != Operator::class) {
+			throw new PhpdbcException("カラム名はstring型でなければなりません.");
 		}
 		$this->column = $column;
 		$this->value = $value;
 		$this->operator = $operator;
 	}
 
-	function __toString() {
+	function toClause() {
 		if ($this->column == null && $this->value == null && $this->operator == null) {
 			return "";
 		}
 		$value = $this->value;
-		if ($value == null) {
-			$value = "NULL";
-		} elseif (gettype($value) == 'string' && $this->operator == Operator::LIKE) {
+		if (!$this->operator->hasValue()) {
+			return sprintf("WHERE %s %s", $this->column, $this->operator);
+		} elseif (gettype($value) == 'string' && $this->operator == Operator::LIKE()) {
 			$value = "'%$value%'";
 		} elseif (gettype($value) == 'string') {
 			$value = "'$value'";

@@ -35,7 +35,7 @@ class FromCase {
 		foreach ($refcls->getProperties(ReflectionProperty::IS_PUBLIC) as $prop) {
 			array_push($columns, $prop->getName());
 		}
-		$sth = $this->db->prepare(sprintf("SELECT %s FROM %s %s", join(", ", $columns), $this->entity, $this->where));
+		$sth = $this->db->prepare(sprintf("SELECT %s FROM %s %s", join(", ", $columns), $this->entity, $this->where->toClause()));
 		$sth->execute();
 		foreach ($sth->fetchAll() as $result) {
 			$values = [];
@@ -56,6 +56,6 @@ class FromCase {
 	}
 
 	function delete() {
-		return new Executable($this->db, sprintf("DELETE FROM %s %s", $this->entity, $this->where));
+		return new Executable($this->db, sprintf("DELETE FROM %s %s", $this->entity, $this->where->toClause()));
 	}
 }

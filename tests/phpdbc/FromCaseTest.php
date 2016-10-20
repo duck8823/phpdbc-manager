@@ -39,7 +39,7 @@ class FromCaseTest extends TestCase {
 		$manager->insert(new Test(1, 'name_1'))->execute();
 		$manager->insert(new Test(2, 'name_2'))->execute();
 
-		$actual = $manager->from(Test::class)->where(new Where('id', 1, Operator::EQUAL))->singleResult();
+		$actual = $manager->from(Test::class)->where(new Where('id', 1, Operator::EQUAL()))->singleResult();
 		$expect = new Test(1, 'name_1');
 
 		$this->assertEquals($expect, $actual);
@@ -58,7 +58,7 @@ class FromCaseTest extends TestCase {
 		$manager->insert(new Test(1, 'name_1'))->execute();
 		$manager->insert(new Test(2, 'name_2'))->execute();
 
-		$manager->from(Test::class)->where(new Where('id', 1, Operator::EQUAL))->delete()->execute();
+		$manager->from(Test::class)->where(new Where('id', 1, Operator::EQUAL()))->delete()->execute();
 
 		$actual = $manager->from(Test::class)->singleResult();
 		$expect = new Test(2, 'name_2');

@@ -15,27 +15,33 @@ use phpdbc\PhpdbcException;
 class WhereTest extends TestCase {
 
 	function testConstructor() {
-		$where = new Where('id', 1, Operator::EQUAL);
+		$where = new Where('id', 1, Operator::EQUAL());
 		$this->assertInstanceOf(Where::class, $where);
 
-		$actual = $where->__toString();
+		$actual = $where->toClause();
 		$this->assertEquals("WHERE id = 1", $actual);
 	}
 
-	function testToString() {
+	function testToClause() {
 		try {
-			new Where(null, 1, Operator::EQUAL);
+			new Where(null, 1, Operator::EQUAL());
 			$this->fail('should throw Exception.');
 		} catch (PhpdbcException $ignore){
 		}
 
 		try {
-			new Where(null, null, Operator::EQUAL);
+			new Where(null, null, Operator::EQUAL());
 			$this->fail('should throw Exception.');
 		} catch (PhpdbcException $ignore){
 		}
 
-		$actual = (new Where('name', 'name', Operator::LIKE))->__toString();
+		$actual = (new Where('name', 'name', Operator::LIKE()))->toClause();
 		$this->assertEquals("WHERE name LIKE '%name%'", $actual);
+
+		$actual = (new Where('name', Operator::IS_NULL()))->toClause();
+		$this->assertEquals("WHERE name IS NULL", $actual);
+
+		$actual = (new Where('name', Operator::IS_NOT_NULL()))->toClause();
+		$this->assertEquals("WHERE name IS NOT NULL", $actual);
 	}
 }
