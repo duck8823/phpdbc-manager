@@ -24,5 +24,7 @@ class OperatorTest extends TestCase {
 		$this->assertEquals('=', Operator::EQUAL());
 		$this->assertEquals('<>', Operator::NOT_EQUAL());
 		$this->assertEquals('LIKE', Operator::LIKE());
+		$this->assertEquals('IS NULL', Operator::IS_NULL());
+		$this->assertEquals('IS NOT NULL', Operator::IS_NOT_NULL());
 	}
 }
