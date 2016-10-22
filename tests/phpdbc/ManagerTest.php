@@ -7,7 +7,7 @@
  */
 
 use PHPUnit\Framework\TestCase;
-
+use phpdbc\PhpdbcException;
 
 class ManagerTest extends TestCase {
 
@@ -29,6 +29,12 @@ class ManagerTest extends TestCase {
 		$this->assertEquals('INTEGER', $rows[0]['type']);
 		$this->assertEquals('name', $rows[1]['name']);
 		$this->assertEquals('TEXT', $rows[1]['type']);
+
+		try {
+			$manager->create(new Test('FAIL', 'TEXT'));
+			$this->fail('should throw Exception.');
+		} catch (PhpdbcException $ignore) {
+		}
 	}
 
 	function testDrop() {

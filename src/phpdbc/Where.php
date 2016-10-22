@@ -39,8 +39,11 @@ class Where {
 		if (($column != null && $operator == null) || ($column == null && $operator != null) || ($column == null && $operator == null && $value != null)) {
 			throw new PhpdbcException();
 		}
-		if ($column != null && gettype($column) != 'string' && gettype($operator) != Operator::class) {
-			throw new PhpdbcException("カラム名はstring型でなければなりません.");
+
+		if ($column != null && gettype($column) != 'string' ) {
+			throw new InvalidArgumentException('column should be string type: ' . gettype($column));
+		} elseif ($operator != null && (is_array($operator) || get_class($operator) != Operator::class)) {
+			throw new InvalidArgumentException('operator should be Operator type: ' . gettype($operator));
 		}
 		$this->column = $column;
 		$this->value = $value;
@@ -56,7 +59,7 @@ class Where {
 			return sprintf("WHERE %s %s", $this->column, $this->operator);
 		} elseif (gettype($value) == 'string' && $this->operator == Operator::LIKE()) {
 			$value = "'%$value%'";
-		} elseif (gettype($value) == 'string') {
+		} else {
 			$value = "'$value'";
 		}
 		return sprintf("WHERE %s %s %s", $this->column, $this->operator, $value);

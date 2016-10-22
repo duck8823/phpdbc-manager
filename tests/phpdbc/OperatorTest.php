@@ -12,6 +12,14 @@ use phpdbc\Operator;
 
 class OperatorTest extends TestCase {
 
+	function testConstruct() {
+		try {
+			new Operator(['HOGE', null]);
+			$this->fail('should throw Exception.');
+		} catch (InvalidArgumentException $ignore) {
+		}
+	}
+
 	function testOperator() {
 		$this->assertEquals('=', Operator::EQUAL());
 		$this->assertEquals('<>', Operator::NOT_EQUAL());

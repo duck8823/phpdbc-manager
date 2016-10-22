@@ -18,8 +18,23 @@ class WhereTest extends TestCase {
 		$where = new Where('id', 1, Operator::EQUAL());
 		$this->assertInstanceOf(Where::class, $where);
 
-		$actual = $where->toClause();
-		$this->assertEquals("WHERE id = 1", $actual);
+		try {
+			new Where('id');
+			$this->fail('should throw Exception.');
+		} catch (InvalidArgumentException $ignore) {
+		}
+
+		try {
+			new Where(1, 'value', Operator::EQUAL());
+			$this->fail('should throw Exception.');
+		} catch (InvalidArgumentException $ignore) {
+		}
+
+		try {
+			new Where('id', 1, Operator::EQUAL);
+			$this->fail('should throw Exception.');
+		} catch (InvalidArgumentException $ignore) {
+		}
 	}
 
 	function testToClause() {
@@ -34,6 +49,9 @@ class WhereTest extends TestCase {
 			$this->fail('should throw Exception.');
 		} catch (PhpdbcException $ignore){
 		}
+
+		$actual = (new Where('id', 1, Operator::EQUAL()))->toClause();
+		$this->assertEquals("WHERE id = '1'", $actual);
 
 		$actual = (new Where('name', 'name', Operator::LIKE()))->toClause();
 		$this->assertEquals("WHERE name LIKE '%name%'", $actual);
