@@ -54,7 +54,10 @@ class Manager {
 		$refcls = new ReflectionClass($data);
 		foreach ($refcls->getProperties(\ReflectionProperty::IS_PUBLIC) as $prop) {
 			array_push($columns, $prop->getName());
-			$value =  $prop->getValue($data);
+			$value = $prop->getValue($data);
+			if (gettype($value) == 'boolean') {
+				$value = $value ? 'TRUE' : 'FALSE';
+			}
 			array_push($values, $value != null ? sprintf("'%s'", $value) : "''");
 		}
 		return sprintf("(%s) VALUES (%s)", join(", ", $columns), join(", ", $values));
