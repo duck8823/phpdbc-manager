@@ -1,5 +1,5 @@
 {
-    "name": "duck8823/phpdbc",
+    "name": "duck8823/phpdbc-manager",
     "license": "MIT",
     "authors": [
         {
@@ -8,6 +8,7 @@
         }
     ],
     "require": {
+        "php": ">= 7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.5",
